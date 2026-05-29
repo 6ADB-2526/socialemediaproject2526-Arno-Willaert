@@ -3,8 +3,10 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const app = express();
-// Vertel Express dat hij de bestanden uit de frontend map live moet zetten
+
 const path = require('path');
+
+// Vertel Express waar je frontend-bestanden (HTML, CSS, JS) staan
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.use(cors());
