@@ -3,6 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const app = express();
+// Vertel Express dat hij de bestanden uit de frontend map live moet zetten
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' })); // Zorgt dat we JSON (en foto's) kunnen ontvangen
