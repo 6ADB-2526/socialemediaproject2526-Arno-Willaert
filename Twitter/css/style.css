@@ -1,0 +1,473 @@
+/* css/style.css */
+
+/* We definiëren variabelen voor de kleuren die Twitter veel gebruikt */
+:root {
+    --twitter-blue: #1d9bf0;
+    --black: #000000;
+    --white: #ffffff;
+    --gray-text: #71767b;
+    --border-color: #eff3f4;
+    --hover-gray: rgba(15, 20, 25, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--white);
+    display: flex;
+    justify-content: center;
+}
+
+/* De hoofdcontainer */
+#app {
+    width: 100%;
+    max-width: 600px; /* De breedte van de feed */
+    min-height: 100vh;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+}
+
+/* Login styling */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 100px 20px;
+}
+
+.login-container h1 {
+    font-size: 31px;
+    margin-bottom: 40px;
+    font-weight: 800;
+}
+
+.login-container input {
+    width: 300px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #cfd9de;
+    border-radius: 4px;
+    font-size: 17px;
+}
+
+.login-container button {
+    width: 300px;
+    padding: 12px;
+    background-color: var(--black);
+    color: white;
+    border: none;
+    border-radius: 9999px; /* Maakt de knop volledig rond aan de zijkanten */
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.login-container button:hover {
+    background-color: #272c30;
+}
+
+/* Navigatie/Header bovenin de feed */
+nav {
+    position: sticky;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px); /* Dat mooie wazige effect */
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    z-index: 10;
+}
+
+nav h2 {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+/* De Tweet Card */
+.tweet {
+    display: flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tweet:hover {
+    background-color: #f7f7f7;
+}
+
+.tweet-avatar {
+    width: 48px;
+    height: 48px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin-right: 12px;
+    flex-shrink: 0; /* Zorgt dat de cirkel niet vervormt */
+}
+
+.tweet-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.tweet-user-info {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.tweet-user-info span {
+    font-weight: normal;
+    color: var(--gray-text);
+    margin-left: 4px;
+}
+
+.tweet-text {
+    font-size: 15px;
+    line-height: 20px;
+    color: #0f1419;
+}
+
+/* De box waar je je tweet typt */
+.tweet-box {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tweet-box-avatar {
+    width: 48px;
+    height: 48px;
+    background-color: #1d9bf0; /* Blauw voor de eigen avatar */
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.tweet-box-content {
+    flex-grow: 1;
+}
+
+.tweet-box-content textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 20px;
+    font-family: inherit;
+    resize: none; /* Voorkomt dat gebruikers de box handmatig groter trekken */
+    margin-top: 10px;
+}
+
+.tweet-box-actions {
+    display: flex;
+    justify-content: flex-end; /* Zet de knop rechts */
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+#tweet-btn {
+    background-color: var(--twitter-blue);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#tweet-btn:disabled {
+    opacity: 0.5;
+}
+
+.tweet-actions {
+    margin-top: 10px;
+}
+
+.like-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    filter: grayscale(1); /* Maak het hartje grijs */
+    transition: 0.2s;
+}
+
+/* Zorg dat de .liked klasse het hartje een andere look geeft */
+.like-btn.liked {
+    color: red !important; /* Maakt de tekst/emoji rood */
+    filter: drop-shadow(0 0 2px rgba(255, 0, 0, 0.5)); /* Geeft een mooie rode gloed */
+}
+
+.layout-wrapper {
+    display: grid;
+    grid-template-columns: 275px 600px 350px; /* Vaste breedtes zoals X */
+    justify-content: center; /* Centreer de drie kolommen op je scherm */
+    width: 100%;
+    margin: 0 auto;
+}
+
+.sidebar-left {
+    padding: 20px;
+    border-right: 1px solid var(--border-color);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+}
+
+.main-feed {
+    border-right: 1px solid var(--border-color);
+    min-height: 100vh;
+}
+
+.sidebar-right {
+    padding: 20px;
+}
+
+.menu a {
+    display: block;
+    padding: 12px;
+    font-size: 20px;
+    text-decoration: none;
+    color: black;
+    border-radius: 9999px;
+}
+
+.menu a:hover {
+    background-color: var(--hover-gray);
+}
+
+/* Voor mobiel: verberg de zijbalken als het scherm te klein is */
+@media (max-width: 1000px) {
+    .sidebar-right { display: none; }
+    .layout-wrapper { grid-template-columns: 80px 1fr; }
+}
+/* De header boven de tweets moet strak zijn */
+.feed-header {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* De trends box styling */
+.trends-box {
+    background-color: #f7f9f9;
+    border-radius: 16px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.trend-item {
+    margin-top: 15px;
+}
+
+.trend-item p {
+    font-size: 13px;
+    color: var(--gray-text);
+}
+
+.trend-item strong {
+    display: block;
+    font-size: 15px;
+}
+
+.tweet-image {
+    display: block; /* Zorgt dat het een echt blok is */
+    width: 100%;    /* Neemt de breedte van de tweet over */
+    height: auto;   /* Behoudt de verhoudingen */
+    max-height: 400px;
+    border-radius: 16px;
+    margin-top: 10px;
+    object-fit: cover; /* Zorgt dat het plaatje mooi vult */
+}
+
+.search-box {
+    margin-bottom: 20px;
+    position: sticky;
+    top: 5px;
+    z-index: 5;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: #eff3f4;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    font-size: 15px;
+    outline: none;
+}
+
+.search-box input:focus {
+    background-color: white;
+    border: 1px solid var(--twitter-blue);
+}
+
+.profile-banner {
+    height: 150px;
+    background-color: #cfd9de; /* Grijs balkje bovenaan */
+}
+
+.profile-info {
+    padding: 15px;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-avatar-large {
+    width: 80px;
+    height: 80px;
+    background-color: var(--twitter-blue);
+    border: 4px solid white;
+    border-radius: 50%;
+    position: absolute;
+    top: -40px; /* Laat de cirkel over de banner vallen */
+}
+
+.profile-info h2 {
+    margin-top: 45px;
+    font-size: 20px;
+}
+
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+.toast {
+    background-color: var(--twitter-blue);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-weight: bold;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+
+
+/* css/style.css */
+
+body.dark-theme {
+    --white: #000000;
+    --black: #ffffff;
+    --border-color: #2f3336;
+    --hover-gray: rgba(255, 255, 255, 0.1);
+    --trend-bg: #16181c;
+    --input-bg: #000000; /* Zwarte achtergrond voor de inputs */
+}
+
+/* 1. De Navigatiebalken (Sidebar & Top Nav) */
+body.dark-theme .sidebar-left,
+body.dark-theme .main-feed,
+body.dark-theme .feed-header,
+body.dark-theme nav {
+    background-color: #000000 !important;
+    color: #ffffff;
+}
+
+/* 2. De Tweetbox Inputs (Bericht en URL) */
+body.dark-theme .tweet-box,
+body.dark-theme #new-tweet-text,
+body.dark-theme #new-tweet-image {
+    background-color: #000000;
+    color: #ffffff; /* Witte letters */
+}
+
+/* Zorg dat de placeholder tekst ook leesbaar is (lichtgrijs) */
+body.dark-theme #new-tweet-text::placeholder,
+body.dark-theme #new-tweet-image::placeholder {
+    color: #71767b;
+}
+
+/* 3. De teksten in de Feed */
+body.dark-theme .tweet {
+    background-color: #000000;
+}
+
+body.dark-theme .tweet-text,
+body.dark-theme .tweet-user-info {
+    color: #ffffff;
+}
+
+/* 4. De Logout knop en andere knoppen in sidebar */
+body.dark-theme .menu a,
+body.dark-theme .logout-btn {
+    color: #ffffff;
+}
+
+/* Standaard styling voor de logout knop */
+.logout-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background-color: black; /* Altijd zwart */
+    color: white;           /* Witte letters */
+    border: 1px solid white; /* De witte omranding */
+    border-radius: 9999px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* Een kleine hover-effect voor betere feedback */
+.logout-btn:hover {
+    background-color: #1a1a1a;
+    border-color: #e1e1e1;
+    transform: scale(0.98); /* Knoopt een klein beetje in als je klikt */
+}
+
+/* css/style.css */
+
+.logo {
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#main-logo {
+    width: 40px;  /* De perfecte grootte voor de sidebar */
+    height: auto;
+    display: block;
+    /* In dark mode kan het logo soms te fel zijn, 
+       maar dit blauwe logo ziet er meestal top uit op zwart */
+}
+
+.image-upload-wrapper {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.image-upload-label {
+    padding: 5px 12px;
+    border: 1px solid var(--twitter-blue);
+    color: var(--twitter-blue);
+    border-radius: 9999px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.image-upload-label:hover {
+    background-color: rgba(29, 155, 240, 0.1);
+}
+
+#file-name-display {
+    font-size: 12px;
+    color: var(--gray-text);
+}

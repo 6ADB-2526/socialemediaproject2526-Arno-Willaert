@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1780049480741,
+    "name": "Administrator",
+    "handle": "admin",
+    "content": "hallo",
+    "image": "",
+    "timestamp": "29-5-2026, 12:11:20",
+    "likes": 0,
+    "likedByUser": false
+  },
+  {
+    "id": 1779788994967,
+    "name": "Systeem",
+    "handle": "system",
+    "content": "Welkom op de nieuwe backend!",
+    "timestamp": "Zojuist",
+    "likes": 1,
+    "likedByUser": true
+  }
+]
