@@ -6,7 +6,7 @@
  * =========================================================================
  * Dit object bevat functies die kant-en-klare HTML-strings teruggeven.
  * Sommige functies accepteren parameters (zoals tweetCard) om dynamische data
- * live in de HTML-structuur te versmelten via `${variabele}` (template literals).
+ * live in de HTML-structuur te versmelten via ${variabele} (template literals).
  */
 const Components = {
 
@@ -62,8 +62,7 @@ const Components = {
      * Bouwt de driekolomslayout op (Sidebar links, Feed midden, Trends rechts).
      */
     homePage: () => {
-        // SESSIE-CHECK: Haal de live geüploade profielfoto op uit het browsergeheugen.
-        // Als de gebruiker die niet heeft, valt de code terug op een inline SVG placeholder (grijs poppetje).
+        // SESSEE-CHECK: Haal de live geüploade profielfoto op uit het browsergeheugen.
         const mijnAvatar = localStorage.getItem('userAvatar') || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23cfd9de"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
         
         return `
@@ -73,10 +72,10 @@ const Components = {
         
         <aside class="sidebar-left">
             <div class="logo">
-                <img src="assets/Logo_of_Twitter.svg.png" alt="Twitter Logo" id="main-logo">
+                <img src="assets/Logo_of_Twitter.svg.png" alt="Twitter Logo" id="main-logo" style="max-width: 40px;">
             </div>
             <nav class="menu">
-                <a href="#" onclick="navigateTo('home')"><b>Home</b></a>
+                <a href="#" onclick="navigateTo('home')" class="active"><b>Home</b></a>
                 <a href="#">Verkennen</a>
                 <a href="#">Meldingen</a>
                 <a href="#" onclick="navigateTo('profile')">Profiel</a>
@@ -96,11 +95,11 @@ const Components = {
                     <textarea id="new-tweet-text" placeholder="Wat gebeurt er?"></textarea>
                     
                     <div class="image-upload-wrapper">
-                        <label for="new-tweet-image-file" class="image-upload-label">
+                        <label for="new-tweet-image-file" class="image-upload-label" style="cursor: pointer; color: #1d9bf0;">
                             📷 Voeg foto toe
                         </label>
-                        <input type="file" id="new-tweet-image-file" accept="image/*" style="display:none;">
-                        <span id="file-name-display">Geen bestand gekozen</span>
+                        <input type="file" id="new-tweet-image-file" accept="image/*" style="display:none;" onchange="if(typeof handleTweetImageSelect === 'function') handleTweetImageSelect(this)">
+                        <span id="file-name-display" style="font-size: 13px; color: #536471; margin-left: 8px;">Geen bestand gekozen</span>
                     </div>
                     
                     <div class="tweet-box-actions">
@@ -139,19 +138,26 @@ const Components = {
     /**
      * 4. De Dynamische Tweet Kaart Template
      * Genereert een losse tweet op basis van data die uit de database (of array) komt.
+     * TOEGEVOEGD: 'hidden' parameter om de huidige status van de tweet te controleren.
      */
-    tweetCard: (name, handle, content, timestamp, likes, id, image, likedByUser, avatar) => {
+    tweetCard: (name, handle, content, timestamp, likes, id, image, likedByUser, avatar, hidden) => {
         const huidigeInlogdeGebruiker = localStorage.getItem('user');
 
-        // RECHTEN-CHECK: Bepaal of de huidige bezoeker het recht heeft om deze specifieke tweet te wissen.
-        // Dit mag als jij de auteur bent óf als jouw accountnaam een van de admin-namen draagt.
-        const magVerwijderen = (huidigeInlogdeGebruiker === name) || 
-                               (huidigeInlogdeGebruiker === handle) || 
-                               (huidigeInlogdeGebruiker === 'Administrator') ||
-                               (huidigeInlogdeGebruiker === 'admin');
+        // RECHTEN-CHECK (SOEPEL): Controleert of de ingelogde gebruiker de tweet mag deleten (eigen tweets + admin)
+        const huidigeSchoon = huidigeInlogdeGebruiker ? huidigeInlogdeGebruiker.trim().toLowerCase() : '';
+        const nameSchoon = name ? name.trim().toLowerCase() : '';
+        const handleSchoon = handle ? handle.trim().toLowerCase() : '';
+
+        const magVerwijderen = (huidigeSchoon === nameSchoon) || 
+                               (huidigeSchoon === handleSchoon) || 
+                               (huidigeSchoon === 'administrator') ||
+                               (huidigeSchoon === 'admin');
 
         // TYPE CASTING: Zorgt ervoor dat zowel een boolean 'true' als het databasegetal '1' als geliked worden gezien.
         const isGeliked = likedByUser === true || likedByUser === 1;
+        
+        // Controleer of de tweet momenteel verborgen is (true of 1)
+        const isVerborgen = hidden === true || hidden === 1;
 
         // Back-up check voor de profielfoto van de auteur van deze tweet.
         const avatarSrc = avatar || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23cfd9de"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
@@ -164,6 +170,7 @@ const Components = {
             border-bottom: 1px solid #eff3f4; 
             background-color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            ${isVerborgen ? 'border-left: 4px solid #1d9bf0;' : ''} /* Geeft een subtiel blauw randje aan jouw verborgen tweets */
         ">
             <img class="tweet-avatar" src="${avatarSrc}" style="
                 width: 40px; 
@@ -172,7 +179,7 @@ const Components = {
                 object-fit: cover;
                 flex-shrink: 0;
                 border: 1px solid #eff3f4;
-            ">
+            " alt="${name}'s Avatar">
             
             <div class="tweet-content-wrapper" style="flex-grow: 1;">
                 
@@ -180,6 +187,7 @@ const Components = {
                     <span class="tweet-name" style="color: #0f1419;"><strong>${name}</strong></span>
                     <span class="tweet-handle" style="color: #536471;">@${handle}</span>
                     <span class="tweet-timestamp" style="color: #536471;">· ${timestamp}</span>
+                    ${isVerborgen ? '<span style="color: #1d9bf0; font-size: 12px; margin-left: auto;">🔒 Alleen zichtbaar voor jou</span>' : ''}
                 </div>
                 
                 <div class="tweet-body">
@@ -188,24 +196,32 @@ const Components = {
                         color: #0f1419; 
                         font-size: 15px; 
                         line-height: 20px; 
-                        white-space: pre-wrap; /* Behoudt enters en spaties die de gebruiker typte */
+                        white-space: pre-wrap; 
                         word-break: break-word;
                     ">${content}</p>
                     
-                    ${image ? `<img src="${image}" class="tweet-image" style="max-width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; margin-top: 12px; border: 1px solid #cfd9de;" />` : ''}
+                    ${image ? `<img src="${image}" class="tweet-image" style="max-width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; margin-top: 12px; border: 1px solid #cfd9de;" alt="Tweet media" />` : ''}
                 </div>
                 
                 <div class="tweet-actions" style="display: flex; gap: 30px; margin-top: 12px; padding-top: 4px;">
+                    
                     <button onclick="likeTweet(${id})" class="like-btn ${isGeliked ? 'liked' : ''}" style="background: none !important; border: none !important; box-shadow: none !important; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 0; margin: 0;">
                         <i class="${isGeliked ? 'fas' : 'far'} fa-heart" style="font-size: 16px; color: ${isGeliked ? '#f91880' : '#536471'} !important; transition: color 0.2s;"></i>
                         <span id="like-count-${id}" class="like-count" style="color: ${isGeliked ? '#f91880' : '#536471'} !important; font-size: 13px; font-weight: ${isGeliked ? 'bold' : 'normal'};">${likes || 0}</span>
                     </button>
                     
                     ${magVerwijderen ? `
-                    <button onclick="deleteTweet(${id})" class="delete-btn" style="background: none !important; border: none !important; box-shadow: none !important; cursor: pointer; display: flex; align-items: center; padding: 0; margin: 0;">
+                    <button onclick="deleteTweet(${id})" class="delete-btn" style="background: none !important; border: none !important; box-shadow: none !important; cursor: pointer; display: flex; align-items: center; padding: 0; margin: 0;" title="Verwijder tweet definitief">
                         <i class="far fa-trash-alt" style="font-size: 16px; color: #536471; transition: color 0.2s;"></i>
                     </button>
                     ` : ''}
+
+                    ${nameSchoon === huidigeSchoon ? `
+                    <button onclick="hideTweet(${id})" class="hide-btn" style="background: none !important; border: none !important; box-shadow: none !important; cursor: pointer; display: flex; align-items: center; padding: 0; margin: 0;" title="${isVerborgen ? 'Maak weer openbaar' : 'Verberg voor anderen'}">
+                        <i class="${isVerborgen ? 'fas fa-eye' : 'far fa-eye-slash'}" style="font-size: 16px; color: ${isVerborgen ? '#1d9bf0' : '#536471'}; transition: color 0.2s;"></i>
+                    </button>
+                    ` : ''}
+                    
                 </div>
                 
             </div>
@@ -223,10 +239,12 @@ const Components = {
         return `
     <div class="layout-wrapper">
         <aside class="sidebar-left">
-            <div class="logo">X</div>
+            <div class="logo">
+                <img src="assets/Logo_of_Twitter.svg.png" alt="Twitter Logo" id="main-logo" style="max-width: 40px;">
+            </div>
             <nav class="menu">
                 <a href="#" onclick="navigateTo('home')">Home</a>
-                <a href="#" class="active"><b>Profiel</b></a>
+                <a href="#" onclick="navigateTo('profile')" class="active"><b>Profiel</b></a>
                 <button onclick="logout()" class="logout-btn">Log uit</button>
             </nav>
         </aside>
@@ -239,7 +257,7 @@ const Components = {
                     <div class="profile-avatar-container" style="position: relative; display: inline-block;">
                         <img id="profile-page-avatar" src="${opgeslagenAvatar}" alt="Profielfoto" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid #ffffff; background-color: #cfd9de;">
                         
-                        <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
+                        <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;" onchange="if(typeof uploadAvatar === 'function') uploadAvatar(this)">
                         
                         <button onclick="document.getElementById('avatar-upload-input').click()" class="btn-change-avatar" style="
                             position: absolute; 
@@ -270,7 +288,13 @@ const Components = {
         </main>
 
         <aside class="sidebar-right">
-            <div class="trends-box"><h3>Trends</h3>...</div>
+            <div class="trends-box">
+                <h3>Trends</h3>
+                <div class="trend-item">
+                    <p>Trending</p>
+                    <strong>#WebDevelopment</strong>
+                </div>
+            </div>
         </aside>
     </div>
     `;

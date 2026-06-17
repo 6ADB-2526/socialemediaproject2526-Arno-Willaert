@@ -548,3 +548,8 @@ body.dark-theme #new-tweet-text::placeholder {
     0% { transform: translateY(-10px) scale(0.95); opacity: 0; }
     100% { transform: translateY(0) scale(1); opacity: 1; }
 }
+
+.tweet-privat {
+    opacity: 0.7; /* Maakt de tweet een beetje vager voor jezelf */
+    border-left: 3px solid #ffad1f; /* Geeft een oranje waarschuwingsrandje */
+}

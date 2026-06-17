@@ -314,6 +314,45 @@ app.post('/update-avatar', (req, res) => {
     }
 });
 
+app.put('/tweets/:id/hide', (req, res) => {
+    try {
+        // We pakken de ID uit de URL
+        const tweetId = req.params.id;
+        console.log(`[HIDE] Poging om tweet met ID te verbergen: ${tweetId}`);
+        
+        // 1. Haal de actuele tweets op
+        const tweets = readTweetsFromFile();
+        console.log(`[HIDE] Aantal tweets ingeladen uit bestand: ${tweets.length}`);
+        
+        // 2. Zoek de juiste tweet op. 
+        // We gebruiken hier t.id == tweetId (twee is-tekens) zodat '123' (tekst) matcht met 123 (getal).
+        const doelTweet = tweets.find(t => t.id == tweetId);
+
+        if (!doelTweet) {
+            console.log(`[HIDE] WAARSCHUWING: Tweet met ID ${tweetId} is NIET gevonden in de array!`);
+            return res.status(404).json({ success: false, message: "Tweet niet gevonden" });
+        }
+
+        // 3. Draai de hidden status om
+        doelTweet.hidden = !doelTweet.hidden;
+        console.log(`[HIDE] Status succesvol omgezet naar hidden = ${doelTweet.hidden}`);
+
+        // 4. Sla de bijgewerkte array op
+        writeTweetsToFile(tweets);
+        console.log(`[HIDE] Wijzigingen succesvol weggeschreven naar tweets.json`);
+        
+        // 5. Geef antwoord aan de frontend
+        res.json({ success: true, hidden: doelTweet.hidden });
+
+    } catch (error) {
+        // Dit logt de ECHTE foutoorzaak in je Node.js terminal!
+        console.error("=== CRUCIALE FOUT IN PUT /tweets/:id/hide ===");
+        console.error(error);
+        console.error("============================================");
+        res.status(500).json({ success: false, message: "Serverfout bij het verbergen." });
+    }
+});
+
 
 // DIAGNOSTISCHE TEST-CODE: Dit draait éénmalig op de achtergrond zodra je de server opstart.
 // Het laat in de terminal direct zien of de backend je frontend-map wel écht kan vinden.
